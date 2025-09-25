@@ -68,21 +68,15 @@ export async function GET(request: NextRequest) {
     const orderDirection = params.sortOrder === 'desc' ? desc(orderColumn) : asc(orderColumn);
 
     // Execute query with filters, sorting, and pagination
-    const [data, countResult] = await Promise.all([
-      db
-        .select()
-        .from(advocates)
-        .where(conditions.length > 0 ? and(...conditions) : undefined)
-        .orderBy(orderDirection)
-        .limit(limit)
-        .offset(offset),
-      db
-        .select({ count: sql<number>`count(*)` })
-        .from(advocates)
-        .where(conditions.length > 0 ? and(...conditions) : undefined)
-    ]);
+    const data = conditions.length > 0
+      ? await db.select().from(advocates).where(and(...conditions)).orderBy(orderDirection).limit(limit).offset(offset)
+      : await db.select().from(advocates).orderBy(orderDirection).limit(limit).offset(offset);
 
-    const total = countResult[0]?.count || 0;
+    // Get total count by fetching all matching records (not ideal for large datasets, but works for type safety)
+    const allRecords = conditions.length > 0
+      ? await db.select().from(advocates).where(and(...conditions))
+      : await db.select().from(advocates);
+    const total = allRecords.length;
     const totalPages = Math.ceil(total / limit);
 
     const response: PaginatedResponse<Advocate> = {
