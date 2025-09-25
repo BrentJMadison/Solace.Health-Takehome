@@ -1,6 +1,11 @@
 <img width="2593" height="1511" alt="image" src="https://github.com/user-attachments/assets/a4941464-7ed9-487e-b28d-12c281dd2795" />
 
 
+
+## Live Preview
+https://solace-health-takehome.vercel.app/
+
+
 ## Solace Candidate Assignment
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
