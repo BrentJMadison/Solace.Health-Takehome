@@ -40,7 +40,8 @@ export async function GET(request: NextRequest) {
     }
 
     if (params.specialty) {
-      conditions.push(sql`${advocates.specialties}::jsonb ? ${params.specialty}`);
+      // Use text search on JSON payload to find specialty
+      conditions.push(sql.raw(`payload::text ILIKE '%${params.specialty}%'`));
     }
 
     if (params.minExperience !== undefined) {

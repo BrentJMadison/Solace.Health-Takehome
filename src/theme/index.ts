@@ -16,12 +16,34 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: 'Lato, sans-serif',
+    h1: {
+      fontFamily: '"Mollie glaston", sans-serif',
+      fontWeight: 600,
+      color: '#1d4238',
+    },
+    h2: {
+      fontFamily: '"Mollie glaston", sans-serif',
+      fontWeight: 600,
+      color: '#1d4238',
+    },
+    h3: {
+      fontFamily: '"Mollie glaston", sans-serif',
+      fontWeight: 600,
+      color: '#1d4238',
+    },
     h4: {
+      fontFamily: '"Mollie glaston", sans-serif',
+      fontWeight: 600,
+      color: '#1d4238',
+    },
+    h5: {
+      fontFamily: '"Mollie glaston", sans-serif',
       fontWeight: 600,
       color: '#1d4238',
     },
     h6: {
+      fontFamily: '"Mollie glaston", sans-serif',
       fontWeight: 500,
       color: '#1d4238',
     },

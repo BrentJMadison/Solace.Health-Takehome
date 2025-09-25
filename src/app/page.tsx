@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import {
   Container,
   Typography,
@@ -37,6 +38,13 @@ const initialPaginationSortingState = {
   sortOrder: "asc" as const,
 };
 
+const initialState = {
+  ...initialPaginationSortingState,
+  ...initialFilterState,
+  minExperience: undefined,
+  maxExperience: undefined,
+};
+
 export default function Home() {
 
   const [filters, setFilters] = useState(initialFilterState);
@@ -47,15 +55,17 @@ export default function Home() {
     const newFilters = { ...filters, [field]: value };
     setFilters(newFilters);
 
-    // Convert empty strings to undefined for API
+    // Always send all filter values - let the backend handle empty values
     const apiFilters: any = {};
     Object.entries(newFilters).forEach(([key, val]) => {
-      if (val && val.trim() !== "") {
-        if (key === "minExperience" || key === "maxExperience") {
+      if (key === "minExperience" || key === "maxExperience") {
+        // Only send numeric values if they're not empty
+        if (val && val.trim() !== "") {
           apiFilters[key] = parseInt(val);
-        } else {
-          apiFilters[key] = val;
         }
+      } else {
+        // Send all other values (including empty strings)
+        apiFilters[key] = val;
       }
     });
 
@@ -64,17 +74,7 @@ export default function Home() {
 
   const handleClearFilters = () => {
     setFilters(initialFilterState);
-
-    // Reset to initial state with proper defaults
-    const resetParams = {
-      ...initialPaginationSortingState,
-      // Only keep limit from current filters if it's different from default
-      limit: currentFilters.limit !== initialPaginationSortingState.limit
-        ? currentFilters.limit
-        : initialPaginationSortingState.limit,
-    };
-
-    updateFilters(resetParams);
+    updateFilters(initialState);
   };
 
   const columns: GridColDef[] = [
@@ -173,12 +173,12 @@ export default function Home() {
       {/* Header */}
       <Box sx={{ mb: 4, textAlign: "center" }}>
         <Box sx={{ mb: 3 }}>
-          <img
+          <Image
             src="https://cdn.prod.website-files.com/632a21d0ec93a082b11988a0/666868fe2677eab531bd589e_Solace.svg"
             alt="Solace Logo"
-            style={{ height: "60px", marginBottom: "16px" }}
-            width="auto"
-            height="60"
+            style={{ marginBottom: "16px" }}
+            width={200}
+            height={60}
           />
         </Box>
         <Typography variant="h4" component="h1" gutterBottom sx={{ color: "white" }}>
