@@ -44,7 +44,6 @@ Refactor src/app/api/advocates/route.ts
 Result: 1520441d247dd5da21f61c57f0dd4b0b2e1e4bd6
 
 
-
 #2:
 ```
 Read @docs/api/advocates.swagger.yaml and @src/app/page.tsx 
@@ -55,5 +54,28 @@ Read @docs/api/advocates.swagger.yaml and @src/app/page.tsx
 3) Refactor onchange to use proper react patterns. This is manipulating the DOM directly currently. Properly utilize state. Add debounce for searching using lodash and data fetching hook
 4) Let's utility types properly from @lib/types --> We can create new types if needed
 5) onclick no longer neededd as we'll fetch with debounce
+6) add proper keys so react can re-render efficiently
 ```
-Result: 
+Result: 62a19c0325a0cd7197edb4e670634410addd662c -- Looking pretty good now!
+
+#3:
+```
+Read @docs/api/advocates.swagger.yaml and @src/app/page.tsx 
+--> Let's improve the UI/UX of this application and use MaterialUI 5 and MUI x data grid to allow for search/sort/filter on all columns.
+Brand colors: #1d4238 (Green) and #ffffff (white) logo is: https://cdn.prod.website-files.com/632a21d0ec93a082b11988a0/666868fe2677eab531bd589e_Solace.svg
+
+
+Let's create a simple and modern display with a title and description of what this application can do.
+
+1) make initial state for filters setFilters and initial state for pagination/sorting/filtering
+2) handleClearFilters is clearing things but it should refetch with original state properly
+3) Speciality chips are getting cut off on next line. Let's make these smaller
+4) fix <img lint warning
+5) refactor to use new grid system in MUI latest version
+<Grid container spacing={2}>
+  <Grid size={8}>
+    <Item>size=8</Item>
+  </Grid>
+
+```
+Also had some other tweak prompts to get this correct.
