@@ -30,6 +30,9 @@ Findings:
 
 4) Plan
 Until now, I've used no AI. Now I'll give Claude Code instructions and audit any changes. Prompt instructions:
+
+
+#1:
 ```
 This application has some bugs and could be greatly improved. Let's start by building the API and defining the typescript interface properly.
 
@@ -38,3 +41,19 @@ Refactor src/app/api/advocates/route.ts
 2) We want to define the types properly. Look at src/db/seed/advocates.ts, define the type, create a backend util file where we will have other types.
 3) Create an API swagger doc for this route
 ```
+Result: 1520441d247dd5da21f61c57f0dd4b0b2e1e4bd6
+
+
+
+#2:
+```
+Read @docs/api/advocates.swagger.yaml and @src/app/page.tsx 
+--> Let's clean up the frontend of this application
+
+1) Create a data fetching hook to use /api/advocates and support sorting, filtering, pagination according to swagger docs
+2) Utilize this hook on the frontend route to load initial data with pagesize 10 on page 1
+3) Refactor onchange to use proper react patterns. This is manipulating the DOM directly currently. Properly utilize state. Add debounce for searching using lodash and data fetching hook
+4) Let's utility types properly from @lib/types --> We can create new types if needed
+5) onclick no longer neededd as we'll fetch with debounce
+```
+Result: 
