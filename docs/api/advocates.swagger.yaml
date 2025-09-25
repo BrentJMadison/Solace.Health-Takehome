@@ -1,0 +1,257 @@
+openapi: 3.0.3
+info:
+  title: Solace Advocates API
+  description: API for managing and retrieving advocate information with filtering, sorting, and pagination capabilities
+  version: 1.0.0
+  contact:
+    name: Solace Team
+    email: support@solace.com
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+paths:
+  /api/advocates:
+    get:
+      summary: Get advocates with filtering, sorting, and pagination
+      description: Retrieve a paginated list of advocates with optional filtering and sorting capabilities
+      tags:
+        - Advocates
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination (starts from 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page (max 100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+            example: 10
+        - name: city
+          in: query
+          description: Filter by city (partial match, case-insensitive)
+          required: false
+          schema:
+            type: string
+            example: "New York"
+        - name: degree
+          in: query
+          description: Filter by degree (partial match, case-insensitive)
+          required: false
+          schema:
+            type: string
+            enum: [MD, PhD, MSW]
+            example: "MD"
+        - name: specialty
+          in: query
+          description: Filter by specialty (exact match in specialties array)
+          required: false
+          schema:
+            type: string
+            example: "ADHD"
+        - name: minExperience
+          in: query
+          description: Minimum years of experience
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            example: 5
+        - name: maxExperience
+          in: query
+          description: Maximum years of experience
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            example: 15
+        - name: search
+          in: query
+          description: Search across firstName, lastName, city, and degree (partial match, case-insensitive)
+          required: false
+          schema:
+            type: string
+            example: "john"
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          required: false
+          schema:
+            type: string
+            enum: [firstName, lastName, city, degree, yearsOfExperience, phoneNumber, createdAt]
+            default: "firstName"
+            example: "yearsOfExperience"
+        - name: sortOrder
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: "asc"
+            example: "desc"
+      responses:
+        '200':
+          description: Successfully retrieved advocates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Advocate'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+              examples:
+                success_response:
+                  summary: Successful response example
+                  value:
+                    data:
+                      - id: 1
+                        firstName: "John"
+                        lastName: "Doe"
+                        city: "New York"
+                        degree: "MD"
+                        specialties: ["Bipolar", "LGBTQ", "General Mental Health"]
+                        yearsOfExperience: 10
+                        phoneNumber: 5551234567
+                        createdAt: "2024-01-15T10:30:00Z"
+                      - id: 2
+                        firstName: "Jane"
+                        lastName: "Smith"
+                        city: "Los Angeles"
+                        degree: "PhD"
+                        specialties: ["Trauma & PTSD", "Women's issues"]
+                        yearsOfExperience: 8
+                        phoneNumber: 5559876543
+                        createdAt: "2024-01-16T11:45:00Z"
+                    pagination:
+                      page: 1
+                      limit: 10
+                      total: 25
+                      totalPages: 3
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+
+components:
+  schemas:
+    Advocate:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - city
+        - degree
+        - specialties
+        - yearsOfExperience
+        - phoneNumber
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the advocate
+          example: 1
+        firstName:
+          type: string
+          description: Advocate's first name
+          example: "John"
+        lastName:
+          type: string
+          description: Advocate's last name
+          example: "Doe"
+        city:
+          type: string
+          description: City where the advocate practices
+          example: "New York"
+        degree:
+          type: string
+          enum: [MD, PhD, MSW]
+          description: Advocate's degree type
+          example: "MD"
+        specialties:
+          type: array
+          items:
+            type: string
+          description: List of advocate's specialties
+          example: ["Bipolar", "LGBTQ", "General Mental Health"]
+        yearsOfExperience:
+          type: integer
+          minimum: 0
+          description: Years of professional experience
+          example: 10
+        phoneNumber:
+          type: integer
+          description: Advocate's contact phone number
+          example: 5551234567
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the advocate record was created
+          example: "2024-01-15T10:30:00Z"
+
+    Pagination:
+      type: object
+      required:
+        - page
+        - limit
+        - total
+        - totalPages
+      properties:
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        limit:
+          type: integer
+          description: Number of items per page
+          example: 10
+        total:
+          type: integer
+          description: Total number of items available
+          example: 25
+        totalPages:
+          type: integer
+          description: Total number of pages available
+          example: 3
+
+  examples:
+    FilterByCity:
+      summary: Filter advocates by city
+      value: "/api/advocates?city=New York&page=1&limit=5"
+
+    FilterByDegreeAndExperience:
+      summary: Filter by degree and experience range
+      value: "/api/advocates?degree=MD&minExperience=5&maxExperience=15"
+
+    SearchAndSort:
+      summary: Search advocates and sort by experience
+      value: "/api/advocates?search=john&sortBy=yearsOfExperience&sortOrder=desc"
+
+    FilterBySpecialty:
+      summary: Filter advocates by specialty
+      value: "/api/advocates?specialty=ADHD&page=1&limit=20"
+
+tags:
+  - name: Advocates
+    description: Operations related to advocate management
