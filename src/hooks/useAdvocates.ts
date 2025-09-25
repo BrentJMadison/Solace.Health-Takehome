@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { debounce } from 'lodash';
 import { Advocate, AdvocateQueryParams, PaginatedResponse } from '@/lib/types';
 
@@ -35,6 +35,8 @@ export function useAdvocates(initialParams: AdvocateQueryParams = {}): UseAdvoca
     ...initialParams,
   });
 
+  const hasMountedRef = useRef(false);
+
   const fetchAdvocates = useCallback(async (params: AdvocateQueryParams) => {
     setLoading(true);
     setError(null);
@@ -67,10 +69,8 @@ export function useAdvocates(initialParams: AdvocateQueryParams = {}): UseAdvoca
     }
   }, []);
 
-  const debouncedFetch = useCallback(
-    debounce((params: AdvocateQueryParams) => {
-      fetchAdvocates(params);
-    }, 300),
+  const debouncedFetch = useMemo(
+    () => debounce(fetchAdvocates, 300),
     [fetchAdvocates]
   );
 
@@ -97,8 +97,11 @@ export function useAdvocates(initialParams: AdvocateQueryParams = {}): UseAdvoca
   }, [currentFilters, fetchAdvocates]);
 
   useEffect(() => {
-    fetchAdvocates(currentFilters);
-  }, []);
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      fetchAdvocates(currentFilters);
+    }
+  }, [fetchAdvocates, currentFilters]);
 
   return {
     data,
