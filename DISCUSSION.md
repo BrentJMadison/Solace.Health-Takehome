@@ -14,3 +14,27 @@ npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.
 - Uncommented line in .env and src/app/api/advocates/route.ts
 - seeded db and db hooked up properly 
 - made initation commit to add backstop
+
+
+3) explore code.
+Findings:
+- src/app/page.tsx
+    - useeffect --> Maybe convert to a hook, add error handling. Also noticing we're client side filtering
+    - onChange --> Not react pattern. Need to refactor to not use DOM directly
+    - type issues --> Need to utilize typescript properly
+    - onClick --> not setup
+    --> UI/UX --> Vanilla HTML, let's setup using MaterialUI
+
+- src/app/api/advocates/route.ts
+    - Nothing is hooked up.
+
+4) Plan
+Until now, I've used no AI. Now I'll give Claude Code instructions and audit any changes. Prompt instructions:
+```
+This application has some bugs and could be greatly improved. Let's start by building the API and defining the typescript interface properly.
+
+Refactor src/app/api/advocates/route.ts
+1) We want to enable server side filtering, sorting, pagination
+2) We want to define the types properly. Look at src/db/seed/advocates.ts, define the type, create a backend util file where we will have other types.
+3) Create an API swagger doc for this route
+```
